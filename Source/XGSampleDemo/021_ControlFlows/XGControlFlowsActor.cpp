@@ -1,0 +1,20 @@
+#include "XGControlFlowsActor.h"
+
+// Sets default values
+AXGControlFlowsActor::AXGControlFlowsActor()
+{
+	// Set this actor to call Tick() every frame. You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+// Called when the game starts or when spawned
+void AXGControlFlowsActor::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+// Called every frame
+void AXGControlFlowsActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
