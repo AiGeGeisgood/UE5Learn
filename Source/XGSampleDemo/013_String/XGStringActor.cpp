@@ -272,9 +272,14 @@ void AXGStringActor::FNameTest()
 	FName MyFName1 = FName(TEXT("OnlyTest"));
 	FName MyFName2 = FName(TEXT("NotTest"));
 
+	FName MyFName3 = FName(TEXT("nottest"));
+
 	bool bEqual = MyFName1== MyFName2;
 
 	int32 CompareResult = MyFName1.Compare(MyFName2);
+
+	//无大小写区别
+	int32 CompareResult2 = MyFName3.Compare(MyFName2);
 
 	if (FName(TEXT("pelvis"), FNAME_Find) != NAME_None)
 	{
