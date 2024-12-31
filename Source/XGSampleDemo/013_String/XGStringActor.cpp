@@ -327,19 +327,22 @@ FText AXGStringActor::FTextFormat()
 
 	FText PercentText = FText::AsPercent(0.33f);
 
-	FText MemoryText = FText::AsMemory(1234);
+	FText MemoryText = FText::AsMemory(1024);
 
 	FText MoneyText= FText::AsCurrencyBase(650, TEXT("EUR"));
 
 	FDateTime MyDateTime=  FDateTime::Now();
-
-	FDateTime::UtcNow();
-
 	FString  CurrentLocalTime =MyDateTime.ToHttpDate();
-
 	FText DateText = FText::AsDate(MyDateTime);
-
 	FText TimeText = FText::AsTime(MyDateTime);
+
+	FDateTime MyDateTime2 = FDateTime::UtcNow();
+	FString  CurrentLocalTime2 =MyDateTime2.ToHttpDate();
+	FText DateText2 = FText::AsDate(MyDateTime2);
+	FText TimeText2 = FText::AsTime(MyDateTime2);
+
+	
+
 
 
 
