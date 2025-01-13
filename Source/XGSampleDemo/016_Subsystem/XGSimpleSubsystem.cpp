@@ -30,7 +30,8 @@ void UXGSimpleSubsystem::Deinitialize()
 void UXGSimpleSubsystem::Tick(float DeltaTime)
 {
 
-	//UE_LOG(LogTemp,Warning,TEXT("Test"));
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red,TEXT("UXGSimpleSubsystemTick is executed"));
+
 
 	if (bFirstTick)
 	{

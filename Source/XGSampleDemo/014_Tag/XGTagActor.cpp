@@ -1,7 +1,7 @@
 #include "XGTagActor.h"
 
 
-UE_DEFINE_GAMEPLAY_TAG_STATIC(XG_Mode_Idle,"XG.Mode.Idle")
+// UE_DEFINE_GAMEPLAY_TAG_STATIC(XG_Mode_Idle,"XG.Mode.Idle")
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(XX_Mode_Idle, "XX.Mode.Idle")
 // Sets default values
