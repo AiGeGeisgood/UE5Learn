@@ -125,8 +125,6 @@ void AXGAssertActor::ZeroBug(int32 InZero)
 	int32 AB = 55 / InZero;
 
 	int32 a = 1;
-
-
 }
 
 void AXGAssertActor::SetLocationWrong()
