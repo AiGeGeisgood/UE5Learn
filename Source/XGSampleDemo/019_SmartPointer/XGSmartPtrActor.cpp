@@ -164,17 +164,12 @@ void AXGSmartPtrActor::EQSPStruct()
 		(*NodeB).PrintAA();
 
 	}
-
-
-
-
-
-
+	
 }
 
 void AXGSmartPtrActor::DeleteStruct()
 {
-
+	//自定义删除器，会执行删除函数而不调用析构函数
 	TSharedRef<FSmartPtrStruct> NewReference(new FSmartPtrStruct(), [](FSmartPtrStruct* Obj) {
 		UE_LOG(LogTemp, Warning, TEXT("自定义删除器-共享引用"));
 	
