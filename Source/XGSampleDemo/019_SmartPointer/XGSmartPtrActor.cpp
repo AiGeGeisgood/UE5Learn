@@ -17,12 +17,10 @@ void AXGSmartPtrActor::InitMySPStruct()
 	TSharedRef<FSmartPtrStruct> MySmartPtrStruct2 = MakeShared<FSmartPtrStruct>();
 
 	//TSharedRef<FSmartPtrStruct> MySmartPtrStruct3;
-
 }
 
 void AXGSmartPtrActor::InitSPStruct()
 {
-
 	// 创建一个空白的共享指针
 
 	TSharedPtr<FSmartPtrStruct> EmptyPointer;
@@ -41,17 +39,12 @@ void AXGSmartPtrActor::InitSPStruct()
 
 	// 创建一个线程安全的共享指针
 
-	TSharedPtr<FSmartPtrStruct, ESPMode::ThreadSafe> NewThreadsafePointer = MakeShared<FSmartPtrStruct, ESPMode::ThreadSafe>(998);
-
-
-
-
-
+	TSharedPtr<FSmartPtrStruct, ESPMode::ThreadSafe> NewThreadsafePointer = MakeShared<
+		FSmartPtrStruct, ESPMode::ThreadSafe>(998);
 }
 
 void AXGSmartPtrActor::ResetSPStruct()
 {
-
 	TSharedPtr<FSmartPtrStruct> PointerOne(new FSmartPtrStruct(1111));
 
 	TSharedPtr<FSmartPtrStruct> PoninterTwo(new FSmartPtrStruct(2222));
@@ -65,13 +58,10 @@ void AXGSmartPtrActor::ResetSPStruct()
 	int32 b = 1;
 
 	int32 c = 1;
-
 }
 
 void AXGSmartPtrActor::MoveSPStruct()
 {
-
-
 	TSharedPtr<FSmartPtrStruct> PointerOne(new FSmartPtrStruct(1111));
 
 	TSharedPtr<FSmartPtrStruct> PoninterTwo;
@@ -87,13 +77,10 @@ void AXGSmartPtrActor::MoveSPStruct()
 	int32 b = 1;
 
 	int32 c = 1;
-
-
 }
 
 void AXGSmartPtrActor::ConvertSPStruct()
 {
-
 	TSharedRef<FSmartPtrStruct> NewReference(new FSmartPtrStruct(456));
 
 	TSharedPtr<FSmartPtrStruct> MySharedPointer = NewReference;
@@ -106,8 +93,6 @@ void AXGSmartPtrActor::ConvertSPStruct()
 	MySharedPointer.Reset();
 
 	TSharedRef<FSmartPtrStruct> BackReferenceNuLL = MySharedPointer.ToSharedRef();
-
-
 }
 
 void AXGSmartPtrActor::EQSPStruct()
@@ -116,43 +101,33 @@ void AXGSmartPtrActor::EQSPStruct()
 
 	if (NodeA == NodeB)
 	{
-
 		// ...
-
 	}
 
 	TSharedRef<FSmartPtrStruct> NodeA1(new FSmartPtrStruct(456));
 
-	NodeB= NodeA1;
+	NodeB = NodeA1;
 
 	if (NodeA1 == NodeB)
 	{
-
-		UE_LOG(LogTemp,Warning,TEXT("相等"));
-
+		UE_LOG(LogTemp, Warning, TEXT("相等"));
 	}
 
 	if (NodeA.IsValid())
 
 	{
-
 		UE_LOG(LogTemp, Warning, TEXT("NodeA可用"));
-
 	}
 
 	if (NodeA)
 
 	{
-
 		UE_LOG(LogTemp, Warning, TEXT("NodeA可用"));
-
 	}
 
 	if (NodeA.Get() != nullptr)
 	{
-
 		UE_LOG(LogTemp, Warning, TEXT("NodeA可用"));
-
 	}
 
 	if (NodeB)
@@ -162,25 +137,23 @@ void AXGSmartPtrActor::EQSPStruct()
 		NodeB.Get()->PrintAA();
 
 		(*NodeB).PrintAA();
-
 	}
-	
 }
 
 void AXGSmartPtrActor::DeleteStruct()
 {
 	//自定义删除器，会执行删除函数而不调用析构函数
-	TSharedRef<FSmartPtrStruct> NewReference(new FSmartPtrStruct(), [](FSmartPtrStruct* Obj) {
+	TSharedRef<FSmartPtrStruct> NewReference(new FSmartPtrStruct(), [](FSmartPtrStruct* Obj)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("自定义删除器-共享引用"));
-	
-		Obj->aa=558;
+
+		Obj->aa = 558;
 	});
 
-	TSharedPtr<FSmartPtrStruct> NewPointer(new FSmartPtrStruct(), [](FSmartPtrStruct* Obj) {
-	
+	TSharedPtr<FSmartPtrStruct> NewPointer(new FSmartPtrStruct(), [](FSmartPtrStruct* Obj)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("自定义删除器-共享指针"));
 		Obj->aa = 559;
-
 	});
 
 	//不能这样写
@@ -191,8 +164,6 @@ void AXGSmartPtrActor::DeleteStruct()
 	//	};
 
 	//TSharedPtr<FSmartPtrStruct> NewPointer2(new FSmartPtrStruct(), MyLambda);
-
-
 }
 
 void AXGSmartPtrActor::MyRef()
@@ -203,7 +174,7 @@ void AXGSmartPtrActor::MyRef()
 	//运行时断点崩溃
 	//TSharedRef<FSmartPtrStruct> UnassignedReference;
 
-	TSharedRef<FSmartPtrStruct> UnassignedReference= NewReference;
+	TSharedRef<FSmartPtrStruct> UnassignedReference = NewReference;
 
 	TSharedRef<FSmartPtrStruct> UnassignedReference2 = MakeShared<FSmartPtrStruct>();
 	//无法编译
@@ -217,7 +188,7 @@ void AXGSmartPtrActor::MyRef()
 		UE_LOG(LogTemp, Warning, TEXT("我们是相等的"));
 	}
 
-	if (UnassignedReference2!=UnassignedReference)
+	if (UnassignedReference2 != UnassignedReference)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("我们是不相等的"));
 	}
@@ -228,8 +199,6 @@ void AXGSmartPtrActor::MyRef()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("我们是又相等的"));
 	}
-
-
 }
 
 void AXGSmartPtrActor::MyWeakPtr()
@@ -252,18 +221,10 @@ void AXGSmartPtrActor::MyWeakPtr()
 
 	if (ObjectObserver.Pin())
 	{
-
 		//只当ObjectOwner非对象的唯一拥有者时，此代码才会运行。
 
 		check(false);
-
 	}
-
-
-
-
-
-
 }
 
 void AXGSmartPtrActor::MyWeakPtr2()
@@ -283,32 +244,23 @@ void AXGSmartPtrActor::MyWeakPtr2()
 	AnotherObjectObserver2.Reset();
 
 
-
 	//获取弱指针中的共享指针，并检查其是否引用有效对象。
 
 	if (TSharedPtr<FSmartPtrStruct> LockedObserver = ObjectObserver.Pin())
 	{
-
 		//共享指针仅在此范围内有效。
 
 		//该对象已被验证为存在，而共享指针阻止其被删除。
 
 		LockedObserver->PrintAA();
-
 	}
 
 	if (ObjectObserver.IsValid())
 	{
-		ObjectObserver.Pin().Get() -> PrintAA();
+		ObjectObserver.Pin().Get()->PrintAA();
 
 		//ObjectOwnerPtr.Reset();
-
 	}
-
-
-
-
-
 }
 
 void AXGSmartPtrActor::MyLoopPtr()
@@ -318,8 +270,6 @@ void AXGSmartPtrActor::MyLoopPtr()
 
 	ObjectOwnerA->MyHoldPtr = ObjectOwnerB;
 	ObjectOwnerB->MyHoldPtr = ObjectOwnerA;
-
-
 }
 
 void AXGSmartPtrActor::MyLoopPtr2()
@@ -330,7 +280,6 @@ void AXGSmartPtrActor::MyLoopPtr2()
 	ObjectOwnerA->MyHoldWeakPtr = ObjectOwnerB;
 
 	ObjectOwnerB->MyHoldWeakPtr = ObjectOwnerA;
-
 }
 
 void AXGSmartPtrActor::MyUniquePtr()
@@ -339,8 +288,21 @@ void AXGSmartPtrActor::MyUniquePtr()
 	//TUniquePtr<FSmartPtrStruct> MyPrtCopy = MyPrt;
 	TUniquePtr<FSmartPtrStruct> MyPrtMove = MoveTemp(MyPrt);
 
-	int32 a=1;
+	int32 a = 1;
+}
 
+void AXGSmartPtrActor::MyAsShared()
+{
+	auto a = new FSmartPtrStruct;
+	auto b = a->AsShared();
+}
+
+void AXGSmartPtrActor::MySSharedThis()
+{
+	auto b = new FSmartPtrStruct;
+	// MakeShareable(b);
+	// MakeShared<FSmartPtrStruct>();
+	b->MyThisShow();
 }
 
 // Called when the game starts or when spawned
