@@ -9,19 +9,14 @@ class XGSAMPLEDEMO_API UXGThreadSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-
 public:
-
-	virtual bool ShouldCreateSubsystem(UObject* Outer) const  override;
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	virtual void Deinitialize() override;
 
-
 public:
-
-
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
 	void InitXGSimpleThread();
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
@@ -53,6 +48,12 @@ public:
 	void InitAsyn();
 
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
+	void InitAsyn02();
+
+	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
+	void InitAsyn03();
+	
+	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
 	void GetAsynFuture();
 
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
@@ -67,23 +68,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
 	void InitParallelFor_Lock();
 
-
 public:
-
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
 	int32 GetMyNum();
 
 	UFUNCTION(BlueprintCallable, Category = "XG|Thread")
 	void SetMyNum(int32 InInt);
 
-
 public:
-
 	static void PrintWarning(FString InStr);
 
-
 protected:
-
 	TSharedPtr<FXGSimpleRunnable> XGSimpleRunnable;
 
 	FRunnableThread* XGSimpleThreadPtr = nullptr;
@@ -94,5 +89,4 @@ protected:
 	FRunnableThread* XGSimpleThreadPtrBool = nullptr;
 
 	int32 MyNum = 0;
-
 };

@@ -11,15 +11,12 @@ bool UXGThreadSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 void UXGThreadSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
 }
 
 void UXGThreadSubsystem::Deinitialize()
 {
 	ReleaseXGSimpleThread();
 	Super::Deinitialize();
-
-
 }
 
 void UXGThreadSubsystem::InitXGSimpleThread()
@@ -27,8 +24,6 @@ void UXGThreadSubsystem::InitXGSimpleThread()
 	XGSimpleRunnable = MakeShared<FXGSimpleRunnable>(TEXT("XGThread000"));
 
 	XGSimpleThreadPtr = FRunnableThread::Create(XGSimpleRunnable.Get(), *XGSimpleRunnable->GetThreadName());
-
-
 }
 
 void UXGThreadSubsystem::ReleaseXGSimpleThread()
@@ -42,8 +37,6 @@ void UXGThreadSubsystem::ReleaseXGSimpleThread()
 	{
 		XGSimpleThreadPtr->WaitForCompletion();
 	}
-
-
 }
 
 void UXGThreadSubsystem::InitXGSimpleThreadBool()
@@ -51,7 +44,6 @@ void UXGThreadSubsystem::InitXGSimpleThreadBool()
 	XGSimpleRunnableBool = MakeShared<FXGSimpleRunnable>(TEXT("XGThreadBool000"));
 
 	XGSimpleThreadPtrBool = FRunnableThread::Create(XGSimpleRunnableBool.Get(), *XGSimpleRunnableBool->GetThreadName());
-
 }
 
 void UXGThreadSubsystem::ReleaseXGSimpleThreadBool()
@@ -65,13 +57,13 @@ void UXGThreadSubsystem::ReleaseXGSimpleThreadBool()
 	{
 		XGSimpleThreadPtrBool->WaitForCompletion();
 	}
-
 }
 
 void UXGThreadSubsystem::InitAsynTask()
 {
 	//第N帧数
-	AsyncTask(ENamedThreads::GameThread, []() {
+	AsyncTask(ENamedThreads::GameThread, []()
+	{
 		//N+1帧数
 
 		//在N+2帧数-A
@@ -88,22 +80,15 @@ void UXGThreadSubsystem::InitAsynTask()
 
 		//在N+2帧数-B
 		UXGThreadSubsystem::PrintWarning(XGInfo);
-
-
-		});
-
-
-
-
-
+	});
 }
 
 void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 {
 	int32 CopyNum = MyNum;
 
-	AsyncTask(ENamedThreads::AnyThread, [this, CopyNum]() {
-
+	AsyncTask(ENamedThreads::AnyThread, [this, CopyNum]()
+	{
 		int32 Max = CopyNum;
 
 		for (size_t i = 0; i < 10000; i++)
@@ -111,7 +96,7 @@ void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 			Max += i;
 		}
 
-		FPlatformProcess::Sleep(0.5);
+		FPlatformProcess::Sleep(10);
 		uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 		FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
 
@@ -119,119 +104,140 @@ void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 		FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 
-
-		AsyncTask(ENamedThreads::GameThread, [this, Max]() {
+		AsyncTask(ENamedThreads::GameThread, [this, Max]()
+		{
+			FPlatformProcess::Sleep(10);
 
 			SetMyNum(Max);
-
-			});
-
 		});
-
-
-
-
-
+	});
 }
 
 void UXGThreadSubsystem::BlockThreadPool()
 {
 	for (size_t i = 0; i < 100; i++)
 	{
-		AsyncTask(ENamedThreads::AnyThread, []() {
-
+		AsyncTask(ENamedThreads::AnyThread, []()
+		{
 			FPlatformProcess::Sleep(2);
-
-			});
-
-
+		});
 	}
-
-
-
 }
 
 void UXGThreadSubsystem::BlockThreadPool2()
 {
-
-	ParallelFor(100, [](int32 Index) {
-
+	ParallelFor(100, [](int32 Index)
+	{
 		UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 		FPlatformProcess::Sleep(2);
-
-		});
-
+	});
 }
 
 void UXGThreadSubsystem::BlockThreadPool3()
 {
 	//一样会卡线程
-	AsyncTask(ENamedThreads::AnyThread, []() {
-
-		ParallelFor(100, [](int32 Index) {
-
+	AsyncTask(ENamedThreads::AnyThread, []()
+	{
+		ParallelFor(100, [](int32 Index)
+		{
 			UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 			FPlatformProcess::Sleep(2);
-
-			});
-
 		});
-
+	});
 }
 
 void UXGThreadSubsystem::InitAsyn()
 {
+	//不会阻塞主线程
 
-	AsyncTask(ENamedThreads::AnyThread, []() {
-
+	AsyncTask(ENamedThreads::AnyThread, []()
+	{
 		for (size_t i = 0; i < 100; i++)
 		{
-
-			Async(EAsyncExecution::Thread, []() {
-
-				FPlatformProcess::Sleep(10);
+			Async(EAsyncExecution::Thread, []()
+			{
+				FPlatformProcess::Sleep(2);
 
 				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
 				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 				PrintWarning(XGInfo);
-
-				});
+			});
 		}
+	});
+}
 
-		});
+void UXGThreadSubsystem::InitAsyn02()
+{
+	//阻塞主线程
+	AsyncTask(ENamedThreads::AnyThread, []()
+	{
+		for (size_t i = 0; i < 100; i++)
+		{
+			Async(EAsyncExecution::TaskGraph, []()
+			{
+				FPlatformProcess::Sleep(2);
+
+				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+
+				PrintWarning(XGInfo);
+			});
+		}
+	});
+}
+
+void UXGThreadSubsystem::InitAsyn03()
+{
+	//不会阻塞主线程
+	AsyncTask(ENamedThreads::AnyThread, []()
+	{
+		for (size_t i = 0; i < 100; i++)
+		{
+			Async(EAsyncExecution::ThreadPool, []()
+			{
+				FPlatformProcess::Sleep(2);
+
+				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+
+				PrintWarning(XGInfo);
+			});
+		}
+	});
 }
 
 void UXGThreadSubsystem::GetAsynFuture()
 {
-
-	AsyncTask(ENamedThreads::AnyThread, []() {
-
-		TArray<TFuture<int32>>  FutureResults;
+	AsyncTask(ENamedThreads::AnyThread, []()
+	{
+		TArray<TFuture<int32>> FutureResults;
 
 		for (size_t i = 0; i < 100; i++)
 		{
 			FutureResults.AddDefaulted();
 			FutureResults.Last() =
-				Async(EAsyncExecution::Thread, [i]()->int32 {
+				Async(EAsyncExecution::Thread, [i]()-> int32
+				{
+					int32 SleepTime = i % 5;
 
-				int32 SleepTime = i % 5;
+					FPlatformProcess::Sleep(SleepTime);
 
-				FPlatformProcess::Sleep(SleepTime);
+					uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+					FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+					FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]--SleepTime:%d"),
+					                                 CurrentID,
+					                                 *CurrentThread,
+					                                 SleepTime
+					);
 
-				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
-				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
-				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]--SleepTime:%d"),
-					CurrentID,
-					*CurrentThread,
-					SleepTime
-				);
+					PrintWarning(XGInfo);
 
-				PrintWarning(XGInfo);
-
-				return SleepTime;
-					});
+					return SleepTime;
+				});
 		}
 		//50%
 		PrintWarning(TEXT("所有任务构建完毕"));
@@ -241,31 +247,26 @@ void UXGThreadSubsystem::GetAsynFuture()
 			int32 SleepTime = TmpFuture.Get();
 
 			PrintWarning(FString::FromInt(SleepTime));
-
 		}
 
 		//100% 呼叫主线程执行后续操作
 		PrintWarning(TEXT("所有任务执行完毕"));
-
-
-		});
-
+	});
 }
+
 //FFunctionGraphTask
 //FGraphEventRef
 //FGraphEventArray
 void UXGThreadSubsystem::GraphEvent()
 {
-
-	FGraphEventRef SimpleEvent = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEvent = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEvent开始执行"));
 
 		FPlatformProcess::Sleep(3);
 
 		PrintWarning(TEXT("我是SimpleEvent执行完成了"));
-
-		});
+	});
 
 	check(!SimpleEvent->IsComplete());
 
@@ -276,8 +277,8 @@ void UXGThreadSubsystem::GraphEvent()
 
 	for (size_t index = 0; index < 20; index++)
 	{
-		SimpleEventArray.Add(FFunctionGraphTask::CreateAndDispatchWhenReady([index]() {
-
+		SimpleEventArray.Add(FFunctionGraphTask::CreateAndDispatchWhenReady([index]()
+		{
 			FString EventInfo = FString::Printf(TEXT("我是SimpleEvent开始执行--Index:%d"), index);
 
 			PrintWarning(EventInfo);
@@ -287,14 +288,11 @@ void UXGThreadSubsystem::GraphEvent()
 			FString EventInfo1 = FString::Printf(TEXT("我是SimpleEvent完成执行--Index:%d"), index);
 
 			PrintWarning(EventInfo1);
-
-			}));
+		}));
 	}
 
 
 	FTaskGraphInterface::Get().WaitUntilTasksComplete(MoveTemp(SimpleEventArray));
-
-
 }
 
 void UXGThreadSubsystem::BatchGraphEvent()
@@ -302,48 +300,44 @@ void UXGThreadSubsystem::BatchGraphEvent()
 	//A->B->C->D
 	//A->A1->D
 
-	FGraphEventRef SimpleEventA = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEventA = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEventA开始执行"));
 
 		FPlatformProcess::Sleep(2);
 
 		PrintWarning(TEXT("我是SimpleEventA执行完成了"));
+	});
 
-		});
 
-
-	FGraphEventRef SimpleEventB = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEventB = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEventB开始执行"));
 
 		FPlatformProcess::Sleep(2);
 
 		PrintWarning(TEXT("我是SimpleEventB执行完成了"));
+	}, TStatId{}, SimpleEventA);
 
-		}, TStatId{}, SimpleEventA);
 
-
-	FGraphEventRef SimpleEventC = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEventC = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEventC开始执行"));
 
 		FPlatformProcess::Sleep(2);
 
 		PrintWarning(TEXT("我是SimpleEventC执行完成了"));
+	}, TStatId{}, SimpleEventB);
 
-		}, TStatId{}, SimpleEventB);
 
-
-	FGraphEventRef SimpleEventA1 = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEventA1 = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEventA111开始执行"));
 
 		FPlatformProcess::Sleep(1);
 
 		PrintWarning(TEXT("我是SimpleEventA1111执行完成了"));
-
-		}, TStatId{}, SimpleEventA);
+	}, TStatId{}, SimpleEventA);
 
 
 	FGraphEventArray Prerequisite;
@@ -352,24 +346,18 @@ void UXGThreadSubsystem::BatchGraphEvent()
 	Prerequisite.Add(SimpleEventC);
 
 
-	FGraphEventRef SimpleEventD = FFunctionGraphTask::CreateAndDispatchWhenReady([]() {
-
+	FGraphEventRef SimpleEventD = FFunctionGraphTask::CreateAndDispatchWhenReady([]()
+	{
 		PrintWarning(TEXT("我是SimpleEventD开始执行"));
 
 		FPlatformProcess::Sleep(2);
 
 		PrintWarning(TEXT("我是SimpleEventD执行完成了"));
-
-		}, TStatId{}, &Prerequisite);
+	}, TStatId{}, &Prerequisite);
 
 	SimpleEventD->Wait();
 
 	PrintWarning(TEXT("所有任务均已完成"));
-
-
-
-
-
 }
 
 void UXGThreadSubsystem::InitParallelFor()
@@ -379,7 +367,6 @@ void UXGThreadSubsystem::InitParallelFor()
 	for (size_t i = 0; i < 10; i++)
 	{
 		FPlatformProcess::Sleep(0.2);
-
 	}
 
 	int64 MyCurrentTick = FDateTime::Now().GetTicks();
@@ -389,31 +376,23 @@ void UXGThreadSubsystem::InitParallelFor()
 	UE_LOG(LogTemp, Warning, TEXT("TickDelta:%d"), TickDelta);
 
 
-
-
 	MyLastTick = FDateTime::Now().GetTicks();
 
-	ParallelFor(10, [](int32 Index) {
-
-
-
+	ParallelFor(10, [](int32 Index)
+	{
 		UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 		FPlatformProcess::Sleep(0.2);
-
-		}, EParallelForFlags::ForceSingleThread | EParallelForFlags::BackgroundPriority | EParallelForFlags::Unbalanced);
+	}, EParallelForFlags::ForceSingleThread | EParallelForFlags::BackgroundPriority | EParallelForFlags::Unbalanced);
 
 	MyCurrentTick = FDateTime::Now().GetTicks();
 
 	TickDelta = MyCurrentTick - MyLastTick;
 
 	UE_LOG(LogTemp, Warning, TEXT("TickDelta_ParallelFor:%d"), TickDelta);
-
-
 }
 
 void UXGThreadSubsystem::InitParallelFor_Lock()
 {
-
 	int64 MyLastTick = FDateTime::Now().GetTicks();
 	int32 MaxNum = 0;
 	for (size_t i = 0; i < 10; i++)
@@ -421,7 +400,6 @@ void UXGThreadSubsystem::InitParallelFor_Lock()
 		MaxNum += i;
 
 		FPlatformProcess::Sleep(i % 3);
-
 	}
 
 	int64 MyCurrentTick = FDateTime::Now().GetTicks();
@@ -431,35 +409,26 @@ void UXGThreadSubsystem::InitParallelFor_Lock()
 	UE_LOG(LogTemp, Warning, TEXT("TickDelta:%d--MaxNum:[%d]"), TickDelta, MaxNum);
 
 
-
-
 	MyLastTick = FDateTime::Now().GetTicks();
 
 	FCriticalSection NumCriticalSection;
 	MaxNum = 0;
 
-	ParallelFor(10, [&MaxNum, &NumCriticalSection](int32 Index) {
-
+	ParallelFor(10, [&MaxNum, &NumCriticalSection](int32 Index)
+	{
 		FPlatformProcess::Sleep(Index % 3);
 
 		FScopeLock Lock(&NumCriticalSection);
-		MaxNum+=Index;
+		MaxNum += Index;
 
 		UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
-		
-
-
-		},   EParallelForFlags::BackgroundPriority | EParallelForFlags::Unbalanced);
+	}, EParallelForFlags::BackgroundPriority | EParallelForFlags::Unbalanced);
 
 	MyCurrentTick = FDateTime::Now().GetTicks();
 
 	TickDelta = MyCurrentTick - MyLastTick;
 
 	UE_LOG(LogTemp, Warning, TEXT("TickDelta:%d--MaxNum:[%d]"), TickDelta, MaxNum);
-
-
-
-
 }
 
 int32 UXGThreadSubsystem::GetMyNum()
@@ -471,23 +440,16 @@ void UXGThreadSubsystem::SetMyNum(int32 InInt)
 {
 	if (!IsInGameThread())
 	{
-		AsyncTask(ENamedThreads::GameThread, [this, InInt]() {SetMyNum(InInt); });
+		AsyncTask(ENamedThreads::GameThread, [this, InInt]() { SetMyNum(InInt); });
 	}
 
 	MyNum = InInt;
-
-
 }
 
 void UXGThreadSubsystem::PrintWarning(FString InStr)
 {
-
-	AsyncTask(ENamedThreads::GameThread, [InStr]() {
-
+	AsyncTask(ENamedThreads::GameThread, [InStr]()
+	{
 		UE_LOG(LogTemp, Warning, TEXT("ThreadLog:[%s]"), *InStr)
-
-		});
-
-
-
+	});
 }
