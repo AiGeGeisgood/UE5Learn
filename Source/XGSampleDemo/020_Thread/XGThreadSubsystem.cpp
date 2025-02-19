@@ -115,7 +115,7 @@ void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 
 void UXGThreadSubsystem::BlockThreadPool()
 {
-	for (size_t i = 0; i < 100; i++)
+	for (size_t i = 0; i < 10; i++)
 	{
 		AsyncTask(ENamedThreads::AnyThread, []()
 		{
@@ -126,7 +126,7 @@ void UXGThreadSubsystem::BlockThreadPool()
 
 void UXGThreadSubsystem::BlockThreadPool2()
 {
-	ParallelFor(100, [](int32 Index)
+	ParallelFor(10, [](int32 Index)
 	{
 		UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 		FPlatformProcess::Sleep(2);
@@ -138,7 +138,7 @@ void UXGThreadSubsystem::BlockThreadPool3()
 	//一样会卡线程
 	AsyncTask(ENamedThreads::AnyThread, []()
 	{
-		ParallelFor(100, [](int32 Index)
+		ParallelFor(10, [](int32 Index)
 		{
 			UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 			FPlatformProcess::Sleep(2);
@@ -152,7 +152,7 @@ void UXGThreadSubsystem::InitAsyn()
 
 	AsyncTask(ENamedThreads::AnyThread, []()
 	{
-		for (size_t i = 0; i < 100; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
 			Async(EAsyncExecution::Thread, []()
 			{
@@ -173,7 +173,7 @@ void UXGThreadSubsystem::InitAsyn02()
 	//阻塞主线程
 	AsyncTask(ENamedThreads::AnyThread, []()
 	{
-		for (size_t i = 0; i < 100; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
 			Async(EAsyncExecution::TaskGraph, []()
 			{
@@ -194,7 +194,7 @@ void UXGThreadSubsystem::InitAsyn03()
 	//不会阻塞主线程
 	AsyncTask(ENamedThreads::AnyThread, []()
 	{
-		for (size_t i = 0; i < 100; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
 			Async(EAsyncExecution::ThreadPool, []()
 			{
@@ -216,7 +216,7 @@ void UXGThreadSubsystem::GetAsynFuture()
 	{
 		TArray<TFuture<int32>> FutureResults;
 
-		for (size_t i = 0; i < 100; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
 			FutureResults.AddDefaulted();
 			FutureResults.Last() =
