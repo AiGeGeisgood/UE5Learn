@@ -22,19 +22,19 @@ uint32 FXGSimpleRunnable::Run()
 	while (bRunning)
 	{
 		FPlatformProcess::Sleep(0.04);
-
+	
 		FScopeLock Lock(&CriticalSection);
-
+	
 		if (!bRunning)
 		{
 			break;
 		}
-
+	
 		//不能这样打印日志
 		//UE_LOG(LogTemp,Warning,TEXT("新线程在工作"));
-
+	
 		UXGThreadSubsystem::PrintWarning(TEXT("XGSimpleRunnable在工作"));
-
+	
 	}
 
 

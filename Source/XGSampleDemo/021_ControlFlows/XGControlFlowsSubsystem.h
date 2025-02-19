@@ -14,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FXGControlFlowsInitResult, FGuid,
 //A的管理任务完成的回调
 DECLARE_MULTICAST_DELEGATE_TwoParams(FXGControlFlowsManageTaskResponseResult, bool, FString)
 
-#define XGCONCTROLRESULT 0
+#define XGCONCTROLRESULT 1
 
 //A1 A2 A3.....
 enum class EXGControlFlowsTaskStatus : uint8
