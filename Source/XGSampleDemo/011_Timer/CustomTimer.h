@@ -7,7 +7,7 @@
 #include "CustomTimer.generated.h"
 
 UCLASS()
-class AGGDEMO_API ACustomTimer : public AActor
+class XGSAMPLEDEMO_API ACustomTimer : public AActor
 {
 	GENERATED_BODY()
 

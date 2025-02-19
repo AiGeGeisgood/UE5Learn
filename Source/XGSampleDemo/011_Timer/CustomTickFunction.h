@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+//附加到Level Tick，场景tick才会跟随tick
 struct FCustomTickFunc : public FTickFunction
 {
 	//FTickFunction的核心
@@ -20,7 +22,7 @@ struct FCustomTickFunc : public FTickFunction
 
 
 UCLASS()
-class AGGDEMO_API ACustomTick01 : public AActor
+class XGSAMPLEDEMO_API ACustomTick01 : public AActor
 {
 	GENERATED_BODY()
 
@@ -36,7 +38,7 @@ public:
 
 
 UCLASS()
-class AGGDEMO_API ACustomTick02 : public AActor
+class XGSAMPLEDEMO_API ACustomTick02 : public AActor
 {
 	GENERATED_BODY()
 
@@ -51,7 +53,7 @@ public:
 };
 
 UCLASS()
-class AGGDEMO_API UCustomTick03 : public UObject
+class XGSAMPLEDEMO_API UCustomTick03 : public UObject
 {
 	GENERATED_BODY()
 

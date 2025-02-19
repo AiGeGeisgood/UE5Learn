@@ -12,11 +12,6 @@
 				"CoreUObject",
 				"Engine"
 			]
-		},
-		{
-			"Name": "AggDemo",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [

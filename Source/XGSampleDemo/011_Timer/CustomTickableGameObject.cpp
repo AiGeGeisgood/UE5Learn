@@ -5,7 +5,7 @@
 
 void ACustomTickableGameObject::Tick(float DeltaTime)
 {
-	// GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red,TEXT("CustomTickableGameObjectTick is executed"));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red,TEXT("CustomTickableGameObjectTick is executed"));
 }
 
 TStatId ACustomTickableGameObject::GetStatId() const
