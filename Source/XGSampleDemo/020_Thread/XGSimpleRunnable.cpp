@@ -19,16 +19,16 @@ uint32 FXGSimpleRunnable::Run()
 
 	UXGThreadSubsystem::PrintWarning(TEXT("XGSimpleRunnable准备进入工作"));
 	PrintThreadInfo();
-	while (bRunning)
+	while (1)
 	{
 		FPlatformProcess::Sleep(0.04);
 	
 		FScopeLock Lock(&CriticalSection);
 	
-		if (!bRunning)
-		{
-			break;
-		}
+		// if (!bRunning)
+		// {
+		// 	break;
+		// }
 	
 		//不能这样打印日志
 		//UE_LOG(LogTemp,Warning,TEXT("新线程在工作"));
