@@ -1,10 +1,10 @@
 #pragma once
 
-class XGThread : public FRunnable
+class FXGThread : public FRunnable
 {
 public:
-	XGThread();
-	virtual ~XGThread() override;
+	FXGThread();
+	virtual ~FXGThread() override;
 
 public:
 	virtual bool Init() override;
@@ -21,6 +21,27 @@ public:
 
 protected:
 	FThreadSafeCounter StopTaskCounter;
-	FEvent* StartUpEvent;
 	FRunnableThread* Thread;
+	FEvent* StartUpEvent;
+
+};
+
+struct MyStruct
+{
+public:
+	void SetA(int32 i)
+	{
+		FScopeLock ScopeLock(&Mutex);
+		a = i;
+	}
+
+	int32 GetA()
+	{
+		FScopeLock ScopeLock(&Mutex);
+		return a;
+	}
+
+private:
+	int a = 1;
+	FCriticalSection Mutex;
 };

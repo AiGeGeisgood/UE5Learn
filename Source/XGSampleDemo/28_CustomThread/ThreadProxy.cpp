@@ -1,14 +1,15 @@
 #include "ThreadProxy.h"
 
+#include "MyGameMode.h"
 #include "Net/Core/Misc/NetConditionGroupManager.h"
 
-XGThread::XGThread()
+FXGThread::FXGThread()
 	: Thread(nullptr),
 	  StartUpEvent(FPlatformProcess::GetSynchEventFromPool())
 {
 }
 
-XGThread::~XGThread()
+FXGThread::~FXGThread()
 {
 	if (Thread != nullptr)
 	{
@@ -19,7 +20,7 @@ XGThread::~XGThread()
 	FPlatformProcess::ReturnSynchEventToPool(StartUpEvent);
 }
 
-bool XGThread::Init()
+bool FXGThread::Init()
 {
 	if (!FPlatformProcess::SupportsMultithreading())
 	{
@@ -28,31 +29,38 @@ bool XGThread::Init()
 	return StopTaskCounter.GetValue() == 0;
 }
 
-uint32 XGThread::Run()
+uint32 FXGThread::Run()
 {
 	while (StopTaskCounter.GetValue() == 0)
 	{
+		FPlatformProcess::Sleep(0.5f);
+		UE_LOG(LogTemp, Warning, TEXT("FXGThread::Run()"));
+		MyStruct* ptr = AMyGameMode::GetStr();
+		int a = ptr->GetA();
+		++a;
+		ptr->SetA(a);
+		UE_LOG(LogTemp, Warning, TEXT("a = %d"), a);
 	}
 
 	return 0;
 }
 
-void XGThread::Stop()
+void FXGThread::Stop()
 {
 	StopTaskCounter.Increment();
 }
 
-void XGThread::Exit()
+void FXGThread::Exit()
 {
 	StartUpEvent->Trigger();
 }
 
-void XGThread::CreateSafeThread()
+void FXGThread::CreateSafeThread()
 {
 	Thread = FRunnableThread::Create(this,TEXT("XGThread"), 0, TPri_BelowNormal);
 }
 
-void XGThread::WaitAndCompleted()
+void FXGThread::WaitAndCompleted()
 {
 	Stop();
 	StartUpEvent->Wait();
