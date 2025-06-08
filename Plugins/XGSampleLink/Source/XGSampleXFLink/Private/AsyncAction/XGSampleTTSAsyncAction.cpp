@@ -594,7 +594,7 @@ USoundWave* UXGSampleTTSAsyncAction::ImportPCMToSoundWave_Method1(const TArray<u
 
 	SoundWave->SetSoundAssetCompressionType(ESoundAssetCompressionType::PCM);
 
-	// SoundWave-> SoundWaveDataPtr->InitializeDataFromSoundWave(*SoundWave);
+	SoundWave->SoundWaveDataPtr->InitializeDataFromSoundWave(*SoundWave);
 
 	return SoundWave;
 }
