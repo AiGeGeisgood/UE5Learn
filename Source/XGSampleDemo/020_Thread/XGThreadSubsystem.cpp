@@ -30,7 +30,6 @@ void UXGThreadSubsystem::InitXGSimpleThread()
 	{
 		XGSimpleThreadPtr = FRunnableThread::Create(XGSimpleRunnable.Get(), *XGSimpleRunnable->GetThreadName());
 	}
-
 }
 
 void UXGThreadSubsystem::ReleaseXGSimpleThread()
@@ -45,9 +44,9 @@ void UXGThreadSubsystem::ReleaseXGSimpleThread()
 	{
 		//等待分支线执行Exit()
 		XGSimpleThreadPtr->WaitForCompletion();
-	
+
 		delete XGSimpleThreadPtr;
-	
+
 		XGSimpleThreadPtr = nullptr;
 	}
 }
@@ -89,7 +88,8 @@ void UXGThreadSubsystem::InitAsynTask()
 		FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
 
 
-		FString XGInfo = FString::Printf(TEXT("--我是主线程02--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+		FString XGInfo = FString::Printf(
+			TEXT("--我是主线程02--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 		//在N+2帧数-B
 		UXGThreadSubsystem::PrintWarning(XGInfo);
@@ -114,7 +114,8 @@ void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 		FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
 
 
-		FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+		FString XGInfo = FString::Printf(
+			TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 
 		AsyncTask(ENamedThreads::GameThread, [this, Max]()
@@ -128,21 +129,35 @@ void UXGThreadSubsystem::InitAsynTask_ALotOfWork()
 
 void UXGThreadSubsystem::BlockThreadPool()
 {
+	//开辟的线程少就不阻塞主线，支线运行
 	for (size_t i = 0; i < 10; i++)
 	{
-		AsyncTask(ENamedThreads::AnyThread, []()
+		AsyncTask(ENamedThreads::AnyThread, [&i]()
 		{
-			FPlatformProcess::Sleep(2);
+			FPlatformProcess::Sleep(10);
+			uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+			FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+			FString XGInfo = FString::Printf(
+				TEXT("I：[%llu]--CurrentID:[%d]--CurrentThreadName:[%s]"), i, CurrentID, *CurrentThread);
+			UXGThreadSubsystem::PrintWarning(XGInfo);
 		});
 	}
+	
 }
 
 void UXGThreadSubsystem::BlockThreadPool2()
 {
+	//一定阻塞主线，只是多线程并行
 	ParallelFor(10, [](int32 Index)
-	{
+	{																												
 		UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
-		FPlatformProcess::Sleep(2);
+		FPlatformProcess::Sleep(10);
+		uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+		FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+		FPlatformProcess::Sleep(10);
+		FString XGInfo = FString::Printf(
+			TEXT("I：[%llu]--CurrentID:[%d]--CurrentThreadName:[%s]"), Index, CurrentID, *CurrentThread);
+		UXGThreadSubsystem::PrintWarning(XGInfo);
 	});
 }
 
@@ -155,6 +170,13 @@ void UXGThreadSubsystem::BlockThreadPool3()
 		{
 			UE_LOG(LogTemp, Display, TEXT("this is ParallelFor:%d"), Index);
 			FPlatformProcess::Sleep(2);
+
+			uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
+			FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
+			FPlatformProcess::Sleep(10);
+			FString XGInfo = FString::Printf(
+				TEXT("I：[%llu]--CurrentID:[%d]--CurrentThreadName:[%s]"), Index, CurrentID, *CurrentThread);
+			UXGThreadSubsystem::PrintWarning(XGInfo);
 		});
 	});
 }
@@ -173,7 +195,8 @@ void UXGThreadSubsystem::InitAsyn()
 
 				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
-				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+				FString XGInfo = FString::Printf(
+					TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 				PrintWarning(XGInfo);
 			});
@@ -194,7 +217,8 @@ void UXGThreadSubsystem::InitAsyn02()
 
 				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
-				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+				FString XGInfo = FString::Printf(
+					TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 				PrintWarning(XGInfo);
 			});
@@ -215,7 +239,8 @@ void UXGThreadSubsystem::InitAsyn03()
 
 				uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 				FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
-				FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
+				FString XGInfo = FString::Printf(
+					TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]"), CurrentID, *CurrentThread);
 
 				PrintWarning(XGInfo);
 			});
@@ -241,10 +266,11 @@ void UXGThreadSubsystem::GetAsynFuture()
 
 					uint32 CurrentID = FPlatformTLS::GetCurrentThreadId();
 					FString CurrentThread = FThreadManager::Get().GetThreadName(CurrentID);
-					FString XGInfo = FString::Printf(TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]--SleepTime:%d"),
-					                                 CurrentID,
-					                                 *CurrentThread,
-					                                 SleepTime
+					FString XGInfo = FString::Printf(
+						TEXT("--我是临时线程执行完毕--CurrentID:[%d]--CurrentThreadName:[%s]--SleepTime:%d"),
+						CurrentID,
+						*CurrentThread,
+						SleepTime
 					);
 
 					PrintWarning(XGInfo);

@@ -125,6 +125,5 @@ float UXGSampleXFLinkBPLibrary::XGXunFeiGetRealTimeSpeechToTextVolumeSize(UObjec
 
 	return false;
 
-
-	return 0.0f;
+	
 }
