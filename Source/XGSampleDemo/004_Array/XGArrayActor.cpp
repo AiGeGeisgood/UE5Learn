@@ -443,7 +443,7 @@ void AXGArrayActor::XGFindArray()
 	StrPtr[5];
 
 	//下面这个越界
-	StrArr[5];
+	// StrArr[5];
 
 
 }
